@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHALIFA SHOP | متجر خليفة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --temu-orange: #ff4711; --bg-gray: #f5f5f5; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-gray); margin: 0; padding-bottom: 50px; }
+        .promo { background: #000; color: #fff; text-align: center; padding: 10px; font-size: 13px; font-weight: bold; }
+        .navbar { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--temu-orange); text-decoration: none; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; cursor: pointer; position: relative; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: var(--temu-orange); }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .info { padding: 15px; text-align: right; }
+        .info h3 { font-size: 15px; margin: 5px 0; color: #333; height: 40px; overflow: hidden; }
+        .price { color: var(--temu-orange); font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .buy-btn { background: var(--temu-orange); color: #fff; border: none; width: 100%; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; }
+        
+        .modal { display: none; position: fixed; z-index: 2000; right: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .order-preview { display: flex; align-items: center; gap: 15px; background: #fdf2ef; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #ffe0d6; }
+        .order-preview img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; border: 2px solid white; }
+        
+        .form-group input, .form-group select { width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .confirm-btn { background: #25d366; color: #fff; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .wa-float { position: fixed; bottom: 25px; left: 25px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="promo">🔥 متجر خليفة: جودة عالمية وأسعار تنافسية في تندوف 🔥</div>
+
+    <nav class="navbar">
+        <a href="#" class="logo">KHALIFA <span style="color:#222">SHOP</span></a>
+        <a href="https://vm.tiktok.com/ZS9LGp5vpsGsP-wEl6o/" target="_blank" style="color:#000; font-size: 22px;"><i class="fab fa-tiktok"></i></a>
+    </nav>
+
+    <div class="container">
+        <div class="products-grid">
+            
+            <div class="card" onclick="openOrder('https://i.ibb.co/5hCthrpD/Screenshot-2026-04-11-01-09-25-69-6d38f9fb71a3ceb6095a2b0c4b96ef6d.jpg', 'Apple iPhone - نسخة أنيقة', '18000 د.ج')">
+                <img src="https://i.ibb.co/5hCthrpD/Screenshot-2026-04-11-01-09-25-69-6d38f9fb71a3ceb6095a2b0c4b96ef6d.jpg" alt="iPhone White">
+                <div class="info">
+                    <h3>Apple iPhone (إصدار مميز)</h3>
+                    <div class="price">18000 د.ج</div>
+                    <button class="buy-btn">اطلب الآن</button>
+                </div>
+            </div>
+
+            <div class="card" onclick="openOrder('https://i.ibb.co/W4P86N2P/Screenshot-2026-04-11-13-28-05-31-680d03679600f7af0b4c700c6b270fe7.jpg', 'سماعات Lenovo اللاسلكية', '200 د.ج')">
+                <img src="https://i.ibb.co/W4P86N2P/Screenshot-2026-04-11-13-28-05-31-680d03679600f7af0b4c700c6b270fe7.jpg" alt="Lenovo Earbuds">
+                <div class="info">
+                    <h3>سماعات Lenovo الأصلية - صوت نقي</h3>
+                    <div class="price">200 د.ج</div>
+                    <button class="buy-btn">اطلب الآن</button>
+                </div>
+            </div>
+
+            <div class="card" onclick="openOrder('https://i.ibb.co/sdsH4xFw/Screenshot-2026-04-11-13-55-34-01-680d03679600f7af0b4c700c6b270fe7.jpg', 'لابتوب HP Pavilion الاحترافي', '60000 د.ج')">
+                <img src="https://i.ibb.co/sdsH4xFw/Screenshot-2026-04-11-13-55-34-01-680d03679600f7af0b4c700c6b270fe7.jpg" alt="HP Laptop">
+                <div class="info">
+                    <h3>لابتوب HP Pavilion - أداء قوي وشاشة مميزة</h3>
+                    <div class="price">60000 د.ج</div>
+                    <button class="buy-btn">اطلب الآن</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center; margin-top: 0;">إتمام طلبك 🚚</h3>
+            <div class="order-preview">
+                <img id="prevImg" src="" alt="المنتج">
+                <div class="order-preview-text">
+                    <h4 id="prevName"></h4>
+                    <p id="prevPrice" style="color: var(--temu-orange); font-weight: bold;"></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="tel" id="userPhone" placeholder="رقم هاتفك (للتواصل)" required>
+                <select id="userState" required>
+                    <option value="">اختر ولايتك</option>
+                    <option value="تندوف">تندوف</option>
+                    <option value="الجزائر">الجزائر العاصمة</option>
+                    <option value="بشار">بشار</option>
+                    <option value="وهران">وهران</option>
+                </select>
+                <input type="text" id="userCity" placeholder="اكتب البلدية هنا" required>
+            </div>
+            <button class="confirm-btn" onclick="sendToWhatsApp()">إرسال الطلب (واتساب) <i class="fab fa-whatsapp"></i></button>
+            <button onclick="closeModal()" style="width: 100%; border: none; background: none; color: #aaa; margin-top: 15px; cursor: pointer;">تراجع</button>
+        </div>
+    </div>
+
+    <a href="https://wa.me/213562093525" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+    <script>
+        let currentPName = ""; let currentPPrice = "";
+        function openOrder(img, name, price) {
+            currentPName = name; currentPPrice = price;
+            document.getElementById('prevImg').src = img;
+            document.getElementById('prevName').innerText = name;
+            document.getElementById('prevPrice').innerText = price;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+        function sendToWhatsApp() {
+            const phone = document.getElementById('userPhone').value;
+            const state = document.getElementById('userState').value;
+            const city = document.getElementById('userCity').value;
+            if(!phone || !state || !city) { alert("من فضلك أكمل جميع الحقول"); return; }
+            const msg = `🛒 *طلب جديد من المتجر*%0A%0A*📦 المنتج:* ${currentPName}%0A*💰 السعر:* ${currentPPrice}%0A--------------------------%0A*👤 بيانات الزبون:*%0A*📞 الهاتف:* ${phone}%0A*📍 الولاية:* ${state}%0A*🏙️ البلدية:* ${city}%0A--------------------------`;
+            window.open(`https://wa.me/213562093525?text=${msg}`, '_blank');
+            closeModal();
+        }
+        window.onclick = function(e) { if(e.target == document.getElementById('orderModal')) closeModal(); }
+    </script>
+</body>
+  </html>
+                      
