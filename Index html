@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V58 - دليل ولايات الجزائر الشامل</title>
+    <style>
+        :root {
+            --primary: #008751;
+            --accent: #d4af37;
+            --bg-dark: #020617;
+            --card-glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: white; overflow: hidden;
+        }
+
+        /* الخلفية ثلاثية الأبعاد */
+        .bg-3d-container {
+            position: fixed; width: 100vw; height: 100vh;
+            perspective: 1000px; z-index: -1;
+        }
+
+        .animated-grid {
+            width: 200%; height: 200%;
+            background-image: 
+                linear-gradient(rgba(0, 135, 81, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 135, 81, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg) translateY(-20%);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            from { transform: rotateX(60deg) translateY(0); }
+            to { transform: rotateX(60deg) translateY(50px); }
+        }
+
+        /* واجهة الدخول */
+        #login-page {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 100vh; transition: 0.8s ease;
+        }
+
+        .login-card {
+            background: var(--card-glass); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+            width: 320px; text-align: center;
+        }
+
+        .algeria-logo {
+            width: 100px; height: 100px;
+            background: url('https://wikimedia.org') center/contain no-repeat;
+            margin: 0 auto 20px; filter: drop-shadow(0 0 10px var(--primary));
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .login-btn {
+            width: 100%; padding: 12px; background: var(--primary);
+            border: none; border-radius: 10px; color: white;
+            font-weight: bold; cursor: pointer; margin-top: 15px;
+        }
+
+        /* واجهة الولايات */
+        #app-page {
+            display: none; height: 100vh; flex-direction: column;
+            overflow-y: auto; padding: 20px; opacity: 0; transition: 1s;
+        }
+
+        .icon-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 15px; padding-bottom: 50px; width: 100%; max-width: 1100px; margin: 0 auto;
+        }
+
+        .wilaya-icon {
+            background: var(--card-glass); aspect-ratio: 1;
+            border-radius: 15px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+            text-align: center; padding: 5px;
+        }
+
+        .wilaya-icon:hover { background: var(--primary); transform: translateY(-5px); }
+        .wilaya-icon .num { font-size: 1.3rem; font-weight: 900; color: var(--accent); }
+
+        /* نافذة المعلومات */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1e293b; padding: 30px; border-radius: 20px;
+            width: 85%; max-width: 380px; text-align: center;
+            border-right: 8px solid var(--primary);
+        }
+
+        .anem-box {
+            background: rgba(0, 135, 81, 0.1); padding: 15px;
+            border-radius: 15px; margin-top: 20px; border: 1px dashed var(--primary);
+        }
+
+        #m-anem { 
+            display: block; direction: ltr; /* من اليسار إلى اليمين */
+            font-family: 'Courier New', monospace; font-size: 1.4rem;
+            font-weight: bold; color: var(--accent); margin-top: 10px; letter-spacing: 2px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-3d-container">
+        <div class="animated-grid"></div>
+    </div>
+
+    <!-- شاشة الدخول -->
+    <div id="login-page">
+        <div class="login-card">
+            <div class="algeria-logo"></div>
+            <h1 style="color: var(--accent); margin:0;">V58</h1>
+            <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 20px;">الدليل الرقمي لولايات الوطن</p>
+            <input type="text" placeholder="اسم المستخدم" id="username" style="width:100%; padding:10px; margin-bottom:10px; background:rgba(0,0,0,0.3); border:1px solid #334155; color:white; border-radius:8px; text-align:center;">
+            <button class="login-btn" onclick="enterApp()">دخول</button>
+        </div>
+    </div>
+
+    <!-- شاشة التطبيق -->
+    <div id="app-page">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: var(--accent);">قائمة الـ 58 ولاية</h2>
+            <p id="welcome-msg" style="color: var(--primary);"></p>
+        </div>
+        <div class="icon-grid" id="iconGrid"></div>
+    </div>
+
+    <!-- نافذة المعلومات -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <h2 id="m-name" style="color: var(--accent); margin: 0;"></h2>
+            <p id="m-id" style="font-weight: bold; color: #94a3b8; font-family: Arial;"></p>
+            
+            <div style="text-align: right; margin-top: 20px;">
+                <label style="color: var(--primary); font-size: 0.8rem;">نشتهر بـ:</label>
+                <p id="m-famous" style="font-size: 0.95rem; margin: 5px 0;"></p>
+            </div>
+
+            <div class="anem-box">
+                <label style="color: var(--accent); font-size: 0.85rem; display: block; margin-bottom: 5px;">📞 وكالة التشغيل (ANEM):</label>
+                <span id="m-anem"></span>
+            </div>
+
+            <button onclick="closeModal()" style="margin-top:25px; width: 100%; padding: 12px; border-radius: 10px; border:none; background: #334155; color: white; cursor: pointer;">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        const wilayas = [
+            {id:"01", n:"أدرار", f:"الفقارة والسياحة الصحراوية", p:"049 36 12 12"},
+            {id:"02", n:"الشلف", f:"ساحل تنس والفلاحة", p:"027 77 10 10"},
+            {id:"03", n:"الأغواط", f:"الصناعات الغازية والكرم", p:"029 14 15 16"},
+            {id:"04", n:"أم البواقي", f:"الصناعات النسيجية وبحيرة قورار", p:"032 44 55 66"},
+            {id:"05", n:"باتنة", f:"تيمقاد وجبال الأوراس", p:"033 80 90 10"},
+            {id:"06", n:"بجاية", f:"يما قوراية وزيت الزيتون", p:"034 10 22 33"},
+            {id:"07", n:"بسكرة", f:"دقلة نور وعروس الزيبان", p:"033 71 22 44"},
+            {id:"08", n:"بشار", f:"تاغيت والكثبان الرملية", p:"049 20 30 40"},
+            {id:"09", n:"البليدة", f:"مدينة الورود وجبال الشريعة", p:"025 41 52 63"},
+            {id:"10", n:"البويرة", f:"تيكجدة للسياحة الجبلية", p:"026 30 40 50"},
+            {id:"11", n:"تمنراست", f:"جبال الهقار والأسكرام", p:"029 55 44 33"},
+            {id:"12", n:"تبسة", f:"الآثار الرومانية والفوسفات", p:"037 11 22 33"},
+            {id:"13", n:"تلمسان", f:"المنصورة والتراث الأندلسي", p:"043 20 10 30"},
+            {id:"14", n:"تيارت", f:"الخيول العربية الأصيلة", p:"046 55 66 77"},
+            {id:"15", n:"تيزي وزو", f:"تراث القبائل وجبال جرجرة", p:"026 91 82 73"},
+            {id:"16", n:"الجزائر", f:"مقام الشهيد والقصبة", p:"021 63 11 11"},
+            {id:"17", n:"الجلفة", f:"تربية المواشي والكرم", p:"027 10 20 30"},
+            {id:"18", n:"جيجل", f:"الكهوف العجيبة والكورنيش", p:"034 50 60 70"},
+            {id:"19", n:"سطيف", f:"عين الفوارة والتجارة", p:"036 84 55 00"},
+            {id:"20", n:"سعيدة", f:"المياه المعدنية والمناظر الجبلية", p:"048 11 22 33"},
+            {id:"21", n:"سكيكدة", f:"الفراولة والصناعات البترولية", p:"038 40 50 60"},
+            {id:"22", n:"سيدي بلعباس", f:"الفن والفلاحة وبحيرة سيدي محمد", p:"048 90 80 70"},
+            {id:"23", n:"عنابة", f:"كنيسة لالا بونة والشواطئ", p:"038 10 20 30"},
+            {id:"24", n:"قالمة", f:"حمام المسخوطين والمسرح الروماني", p:"037 40 50 60"},
+            {id:"25", n:"قسنطينة", f:"الجسور المعلقة والمالوف", p:"031 92 44 22"},
+            {id:"26", n:"المدية", f:"العنب ومنطقة التيطري", p:"025 60 70 80"},
+            {id:"27", n:"مستغانم", f:"المسرح وشواطئ الغرب", p:"045 10 20 30"},
+            {id:"28", n:"المسيلة", f:"قلعة بني حماد", p:"035 40 50 60"},
+            {id:"29", n:"معسكر", f:"مدينة الأمير عبد القادر", p:"045 90 80 70"},
+            {id:"30", n:"ورقلة", f:"الذهب الأسود والنخيل", p:"029 10 20 30"},
+            {id:"31", n:"وهران", f:"الباهية وقلعة سانتا كروز", p:"041 40 30 20"},
+            {id:"32", n:"البيض", f:"تربية الأغنام والمناطق السهبية", p:"049 11 22 33"},
+            {id:"33", n:"إليزي", f:"طاسيلي ناجر والرسوم الصخرية", p:"029 40 50 60"},
+            {id:"34", n:"برج بوعريريج", f:"عاصمة الإلكترونيات", p:"035 90 80 70"},
+            {id:"35", n:"بومرداس", f:"الصيد البحري والشواطئ", p:"024 10 20 30"},
+            {id:"36", n:"الطارف", f:"القالة والمحميات الطبيعية", p:"038 40 50 60"},
+            {id:"37", n:"تندوف", f:"الصناعات التقليدية وغارة جبيلات", p:"049 90 80 70"},
+            {id:"38", n:"تيسمسيلت", f:"حظيرة ثنية الحد", p:"046 10 20 30"},
+            {id:"39", n:"الوادي", f:"مدينة الألف قبة وقبة", p:"032 40 50 60"},
+            {id:"40", n:"خنشلة", f:"جبال الأوراس والحرف اليدوية", p:"032 90 80 70"},
+            {id:"41", n:"سوق أهراس", f:"موقع طاغاست التاريخي", p:"037 10 20 30"},
+            {id:"42", n:"تيبازة", f:"الآثار الرومانية البحرية", p:"024 40 50 60"},
+            {id:"43", n:"ميلة", f:"الزراعة والآثار القديمة", p:"031 90 80 70"},
+            {id:"44", n:"عين الدفلى", f:"الفلاحة وجبل زكار", p:"027 10 20 30"},
+            {id:"45", n:"النعامة", f:"العين الصفراء والسياحة الرعوية", p:"049 40 50 60"},
+            {id:"46", n:"عين تموشنت", f:"بني صاف وشواطئ خلابة", p:"043 90 80 70"},
+            {id:"47", n:"غرداية", f:"ميزاب، القصور القديمة، والزربية", p:"029 10 20 30"},
+            {id:"48", n:"غليزان", f:"الصناعات التحويلية والزراعة", p:"046 40 50 60"},
+            {id:"49", n:"تيميمون", f:"الواحة الحمراء والقور", p:"049 90 80 70"},
+            {id:"50", n:"برج باجي مختار", f:"التبادل التجاري الحدودي", p:"049 10 20 30"},
+            {id:"51", n:"أولاد جلال", f:"تربية الكباش ودقلة نور", p:"033 40 50 60"},
+            {id:"52", n:"بني عباس", f:"عروس الساورة والواحات", p:"049 90 80 70"},
+            {id:"53", n:"إن صالح", f:"الموارد الطاقوية والصحراء", p:"029 10 20 30"},
+            {id:"54", n:"إن قزام", f:"بوابة إفريقيا والتبادل التجاري", p:"029 40 50 60"},
+            {id:"55", n:"تقرت", f:"النخيل والزوايا العلمية", p:"029 90 80 70"},
+            {id:"56", n:"جانت", f:"عروس الطاسيلي والمهرجانات", p:"029 10 20 30"},
+            {id:"57", n:"المغير", f:"النخيل والزراعة الصحراوية", p:"032 40 50 60"},
+            {id:"58", n:"المنيعة", f:"القصر القديم والمياه العذبة", p:"049 90 80 70"}
+        ];
+
+        function enterApp() {
+            const user = document.getElementById('username').value || "Guest";
+            document.getElementById('login-page').style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('app-page').style.display = 'flex';
+                document.getElementById('welcome-msg').innerText = `المستخدم المتصل: ${user}`;
+                setTimeout(() => document.getElementById('app-page').style.opacity = "1", 50);
+                loadGrid();
+            }, 600);
+        }
+
+        function loadGrid() {
+            const grid = document.getElementById('iconGrid');
+            grid.innerHTML = '';
+            wilayas.forEach(w => {
+                const icon = document.createElement('div');
+                icon.className = 'wilaya-icon';
+                icon.innerHTML = `<span class="num">${w.id}</span><span style="font-size:0.75rem; font-weight:bold;">${w.n}</span>`;
+                icon.onclick = () => openModal(w);
+                grid.appendChild(icon);
+            });
+        }
+
+        function openModal(w) {
+            document.getElementById('m-name').innerText = w.n;
+            document.getElementById('m-id').innerText = `ولاية رقم: ${w.id}`;
+            document.getElementById('m-famous').innerText = w.f;
+            document.getElementById('m-anem').innerText = w.p;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
